@@ -26,6 +26,18 @@ def parse_args() -> argparse.Namespace:
         default=5,
         help="Process every Nth frame (default: 5)",
     )
+    parser.add_argument(
+        "--max-frames",
+        type=int,
+        default=60,
+        help="Stop after this many processed frames (default: 60)",
+    )
+    parser.add_argument(
+        "--resize-width",
+        type=int,
+        default=960,
+        help="Resize frames to this width before detection (default: 960)",
+    )
     return parser.parse_args()
 
 
@@ -66,10 +78,20 @@ def empty_row(video_path: Path, frame_index: int, timestamp: float, frame_path: 
     }
 
 
+def resize_frame(frame, target_width: int):
+    if target_width <= 0 or frame.shape[1] <= target_width:
+        return frame
+    scale = target_width / float(frame.shape[1])
+    target_height = int(frame.shape[0] * scale)
+    return cv2.resize(frame, (target_width, target_height), interpolation=cv2.INTER_AREA)
+
+
 def main() -> None:
     args = parse_args()
     if args.every <= 0:
         raise ValueError("--every must be a positive integer")
+    if args.max_frames <= 0:
+        raise ValueError("--max-frames must be a positive integer")
 
     video_path = Path(args.video_path)
     if not video_path.exists():
@@ -85,15 +107,21 @@ def main() -> None:
     stem = video_path.stem
 
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    source_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    source_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    if args.resize_width > 0 and source_width > args.resize_width:
+        writer_width = args.resize_width
+        writer_height = int(source_height * (args.resize_width / float(source_width)))
+    else:
+        writer_width = source_width
+        writer_height = source_height
 
     annotated_video_path = output_dir / f"{stem}_annotated.mp4"
     writer = cv2.VideoWriter(
         str(annotated_video_path),
         cv2.VideoWriter_fourcc(*"mp4v"),
         fps,
-        (width, height),
+        (writer_width, writer_height),
     )
     if not writer.isOpened():
         writer = None
@@ -102,16 +130,18 @@ def main() -> None:
     processed_frames = 0
     frame_index = 0
 
-    while True:
+    while processed_frames < args.max_frames:
         ok, frame = cap.read()
         if not ok:
             break
 
-        output_frame = frame
+        output_frame = resize_frame(frame, args.resize_width)
         if frame_index % args.every == 0:
+            print(f"Processing frame {frame_index}...")
             timestamp = frame_index / fps
-            detections = detect_ball(frame)
-            output_frame = annotate_image(frame, detections)
+            resized_frame = resize_frame(frame, args.resize_width)
+            detections = detect_ball(resized_frame)
+            output_frame = annotate_image(resized_frame, detections)
             frame_path = frames_dir / f"{stem}_frame_{frame_index:06d}_annotated.jpg"
             cv2.imwrite(str(frame_path), output_frame)
 
@@ -135,6 +165,8 @@ def main() -> None:
     summary = {
         "video_path": str(video_path),
         "processed_every_n_frames": args.every,
+        "max_processed_frames": args.max_frames,
+        "resize_width": args.resize_width,
         "total_frames": frame_index,
         "processed_frames": processed_frames,
         "annotated_video_path": str(annotated_video_path) if annotated_video_path.exists() else "",
