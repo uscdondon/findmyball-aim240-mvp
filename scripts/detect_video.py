@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -43,6 +44,8 @@ def parse_args() -> argparse.Namespace:
 
 def detection_row(video_path: Path, frame_index: int, timestamp: float, det, frame_path: Path) -> dict:
     radius = 0.5 * max(det.w, det.h)
+    center_x = det.x + det.w / 2.0
+    center_y = det.y + det.h / 2.0
     return {
         "video_path": str(video_path),
         "frame_index": frame_index,
@@ -54,6 +57,8 @@ def detection_row(video_path: Path, frame_index: int, timestamp: float, det, fra
         "w": int(det.w),
         "h": int(det.h),
         "radius": round(float(radius), 2),
+        "center_x": round(float(center_x), 2),
+        "center_y": round(float(center_y), 2),
         "detector_type": det.detector_type,
         "selection_method": getattr(det, "selection_method", ""),
         "annotated_frame_path": str(frame_path),
@@ -72,6 +77,8 @@ def empty_row(video_path: Path, frame_index: int, timestamp: float, frame_path: 
         "w": "",
         "h": "",
         "radius": "",
+        "center_x": "",
+        "center_y": "",
         "detector_type": "",
         "selection_method": "",
         "annotated_frame_path": str(frame_path),
@@ -84,6 +91,49 @@ def resize_frame(frame, target_width: int):
     scale = target_width / float(frame.shape[1])
     target_height = int(frame.shape[0] * scale)
     return cv2.resize(frame, (target_width, target_height), interpolation=cv2.INTER_AREA)
+
+
+def movement_direction(delta_x: float, delta_y: float) -> str:
+    if math.hypot(delta_x, delta_y) < 5:
+        return "minimal_movement"
+    if abs(delta_x) >= abs(delta_y):
+        return "mostly_right" if delta_x > 0 else "mostly_left"
+    return "mostly_down" if delta_y > 0 else "mostly_up"
+
+
+def build_trajectory_summary(rows: list[dict]) -> dict:
+    detections = [row for row in rows if row["label"]]
+    if not detections:
+        return {
+            "frames_with_detections": 0,
+            "first_detection_frame": None,
+            "last_detection_frame": None,
+            "start_center": None,
+            "end_center": None,
+            "delta_x": 0,
+            "delta_y": 0,
+            "total_pixel_displacement": 0,
+            "movement_direction_simple": "minimal_movement",
+        }
+
+    first = detections[0]
+    last = detections[-1]
+    start_center = [float(first["center_x"]), float(first["center_y"])]
+    end_center = [float(last["center_x"]), float(last["center_y"])]
+    delta_x = end_center[0] - start_center[0]
+    delta_y = end_center[1] - start_center[1]
+    displacement = math.hypot(delta_x, delta_y)
+    return {
+        "frames_with_detections": len(detections),
+        "first_detection_frame": int(first["frame_index"]),
+        "last_detection_frame": int(last["frame_index"]),
+        "start_center": [round(start_center[0], 2), round(start_center[1], 2)],
+        "end_center": [round(end_center[0], 2), round(end_center[1], 2)],
+        "delta_x": round(delta_x, 2),
+        "delta_y": round(delta_y, 2),
+        "total_pixel_displacement": round(displacement, 2),
+        "movement_direction_simple": movement_direction(delta_x, delta_y),
+    }
 
 
 def main() -> None:
@@ -162,6 +212,7 @@ def main() -> None:
 
     json_path = output_dir / f"{stem}_video_detections.json"
     csv_path = output_dir / f"{stem}_video_detections.csv"
+    trajectory_summary = build_trajectory_summary(rows)
     summary = {
         "video_path": str(video_path),
         "processed_every_n_frames": args.every,
@@ -170,6 +221,7 @@ def main() -> None:
         "total_frames": frame_index,
         "processed_frames": processed_frames,
         "annotated_video_path": str(annotated_video_path) if annotated_video_path.exists() else "",
+        "trajectory_summary": trajectory_summary,
         "detections": rows,
     }
     json_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
@@ -185,6 +237,8 @@ def main() -> None:
         "w",
         "h",
         "radius",
+        "center_x",
+        "center_y",
         "detector_type",
         "selection_method",
         "annotated_frame_path",
@@ -194,6 +248,8 @@ def main() -> None:
         writer_csv.writeheader()
         writer_csv.writerows(rows)
 
+    print("Trajectory summary:")
+    print(json.dumps(trajectory_summary, indent=2))
     print(json.dumps(summary, indent=2))
 
 
