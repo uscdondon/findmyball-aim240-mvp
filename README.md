@@ -61,6 +61,14 @@ python scripts/extract_frames.py videos/sample.mov --every 10
   - contour filtering by area, circularity, and aspect ratio
 - Sorts by confidence and returns only top candidates for readable annotations.
 
+## Current Result
+
+The current MVP successfully detects the orange golf ball in the sample image using HSV color segmentation plus contour-based shape filtering (area, circularity, and aspect ratio).
+
+## Known Limitation
+
+This baseline can also detect orange UI elements or thumbnails, because it detects orange circular/compact regions rather than semantic golf balls. That limitation is why a trained YOLO model is planned as future work.
+
 ### 2) Image Detection CLI (`scripts/detect_image.py`)
 
 - Input: image path
