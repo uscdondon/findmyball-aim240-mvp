@@ -1,15 +1,39 @@
 ## AIM240 FindMyBall MVP
 
-This is a **small, runnable, class-ready capstone MVP** for AIM240.
+## Project Overview
 
-Today it implements a baseline **classical computer vision detector** (OpenCV + NumPy) and a working command-line pipeline:
+FindMyBall AIM240 MVP is a computer vision capstone prototype for detecting golf ball candidates in still images and short putt/chip-shot videos. The current system is a working baseline intended for class demonstration and iterative improvement, not a production detector.
 
-- detect a ball-like object in an image
-- save an annotated image to `output/`
-- save detection JSON to `output/`
-- extract every Nth frame from a video into `output/frames/`
+## Current MVP Result
 
-This is intentionally minimal so you can demo quickly and iterate.
+The current MVP can:
+
+- detect a red/orange golf ball in a still image
+- detect a white golf ball in a still image
+- process a short red micro-putt iPhone video
+- save annotated outputs
+- save JSON/CSV detection logs
+- save evidence artifacts in `evidence/video/`
+
+## Current Method
+
+The baseline method currently uses:
+
+- HSV segmentation for red/orange/pink golf balls
+- brightness/low-saturation mask for white golf balls
+- Hough circle detection
+- largest-mask-component plus Hough-circle selection
+- one dominant detection candidate per still image
+- sampled frame processing for video
+
+## Evidence
+
+Current evidence artifacts include:
+
+- `evidence/video/red_micro_putt_best_frame_screenshot.png`
+- `evidence/video/red_micro_putt_video_detections.json`
+- `evidence/video/red_micro_putt_video_detections.csv`
+- `evidence/video/red_micro_putt_annotated.mp4` (if present)
 
 ## Current Project Structure
 
@@ -40,7 +64,7 @@ README.md
 .gitignore
 ```
 
-## Quick Start
+## How to Run
 
 Run these commands from the project root:
 
@@ -48,62 +72,26 @@ Run these commands from the project root:
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python scripts/detect_image.py input/sample.png
-python scripts/detect_video.py videos/sample.mov --every 5
-python scripts/extract_frames.py videos/sample.mov --every 10
+python scripts/detect_image.py input/red.png
+python scripts/detect_image.py input/white.png
+python scripts/detect_video.py videos/red_micro_putt.MOV --every 15 --max-frames 20 --resize-width 720
 ```
 
-## What Works Today
+## Known Limitations
 
-### 1) Baseline Detector (`app/services/detector.py`)
+- Baseline only; not YOLO-based yet
+- Controlled close-up video only so far
+- Bounding boxes are intentionally generous
+- May fail with fast motion, distant balls, motion blur, or cluttered scenes
+- No trajectory estimate yet
+- No final resting-location estimate yet
+- No FastAPI/Docker/frontend layer yet
 
-- Uses OpenCV classical CV methods focused on **orange golf ball candidates**:
-  - HSV orange/red-orange color segmentation
-  - mask cleanup with blur + morphological open/close
-  - contour filtering by area, circularity, and aspect ratio
-- Sorts by confidence and returns only top candidates for readable annotations.
+## Next Steps
 
-## Current Result
-
-The current MVP successfully detects the orange golf ball in the sample image using HSV color segmentation plus contour-based shape filtering (area, circularity, and aspect ratio).
-
-## Known Limitation
-
-This baseline can also detect orange UI elements or thumbnails, because it detects orange circular/compact regions rather than semantic golf balls. That limitation is why a trained YOLO model is planned as future work.
-
-### 2) Image Detection CLI (`scripts/detect_image.py`)
-
-- Input: image path
-- Output files:
-  - `output/<image_stem>_annotated.png`
-  - `output/<image_stem>_detections.json`
-- Also prints detection JSON to terminal.
-
-### 3) Frame Extraction CLI (`scripts/extract_frames.py`)
-
-- Input: video path + `--every N`
-- Output files:
-  - `output/frames/<video_stem>_frame_000000.jpg` (and so on)
-
-### 4) Video Batch Detection CLI (`scripts/detect_video.py`)
-
-Still images are useful detector tests, but the real capstone direction is putt/chip-shot video. `detect_video.py` runs the current baseline detector across sampled video frames, saves annotated frames, writes JSON/CSV detection summaries, and attempts an annotated MP4 output.
-
-Future work will add tracking across frames and final resting-location estimation.
-
-## Minimal FastAPI Skeleton Included
-
-FastAPI files are scaffolded (`app/main.py`, `app/api/endpoints.py`, `app/schemas/`) so the project can grow cleanly, but the full API is intentionally not built yet.
-
-## Future Work (Not Implemented Today)
-
-- YOLO-based training and inference pipeline
-- Full FastAPI upload/prediction endpoints
-- Dockerized deployment
-- Simple frontend for uploads and result visualization
-
-## Notes
-
-- Keep sample media in `input/` and `videos/`.
-- Generated outputs go to `output/`.
-- Model weights and large media are ignored by git.
+- test white-ball micro-putt video
+- add trajectory estimate from detected center points
+- prepare YOLO dataset structure
+- train YOLO detector
+- wrap model in FastAPI/Docker later
+- optionally add a simple frontend demo
