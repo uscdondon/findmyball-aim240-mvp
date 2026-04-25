@@ -32,7 +32,7 @@ def main() -> None:
     if image is None:
         raise ValueError(f"Unable to decode image: {image_path}")
 
-    detections, debug_mask = detect_ball_with_mask(image)
+    detections, colored_mask, white_mask, combined_mask, hough_candidates = detect_ball_with_mask(image)
     annotated = annotate_image(image, detections)
 
     output_dir = ROOT / "output"
@@ -41,15 +41,24 @@ def main() -> None:
 
     annotated_path = output_dir / f"{stem}_annotated.png"
     json_path = output_dir / f"{stem}_detections.json"
-    mask_path = output_dir / f"{stem}_mask.png"
+    colored_mask_path = output_dir / f"{stem}_colored_mask.png"
+    white_mask_path = output_dir / f"{stem}_white_mask.png"
+    combined_mask_path = output_dir / f"{stem}_combined_mask.png"
+    hough_candidates_path = output_dir / f"{stem}_hough_candidates.png"
 
     cv2.imwrite(str(annotated_path), annotated)
-    cv2.imwrite(str(mask_path), debug_mask)
+    cv2.imwrite(str(colored_mask_path), colored_mask)
+    cv2.imwrite(str(white_mask_path), white_mask)
+    cv2.imwrite(str(combined_mask_path), combined_mask)
+    cv2.imwrite(str(hough_candidates_path), hough_candidates)
 
     payload = {
         "image_path": str(image_path),
         "annotated_image_path": str(annotated_path),
-        "debug_mask_path": str(mask_path),
+        "colored_mask_path": str(colored_mask_path),
+        "white_mask_path": str(white_mask_path),
+        "combined_mask_path": str(combined_mask_path),
+        "hough_candidates_path": str(hough_candidates_path),
         "detections_json_path": str(json_path),
         "count": len(detections),
         "detections": [
@@ -58,8 +67,11 @@ def main() -> None:
                 "y": int(d.y),
                 "w": int(d.w),
                 "h": int(d.h),
+                "label": d.label,
                 "confidence": float(d.confidence),
-                "method": d.method,
+                "circularity": float(d.circularity),
+                "area": float(d.area),
+                "detector_type": d.detector_type,
             }
             for d in detections
         ],
