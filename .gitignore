@@ -1,0 +1,29 @@
+# Python environment and cache
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Generated output artifacts (keep folder placeholders)
+output/*
+!output/.gitkeep
+!output/frames/
+!output/frames/.gitkeep
+
+# Input media should not be committed (keep placeholder)
+input/*
+!input/.gitkeep
+
+# Video media should not be committed (keep placeholder)
+videos/*
+!videos/.gitkeep
+
+# Model weights and artifacts (keep placeholder)
+models/*
+!models/.gitkeep
+*.pt
+*.pth
+*.onnx
+*.engine
+*.weights
+
