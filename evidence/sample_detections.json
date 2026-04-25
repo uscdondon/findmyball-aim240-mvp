@@ -1,0 +1,49 @@
+{
+  "image_path": "input/sample.png",
+  "annotated_image_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/sample_annotated.png",
+  "debug_mask_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/sample_mask.png",
+  "detections_json_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/sample_detections.json",
+  "count": 5,
+  "detections": [
+    {
+      "x": 552,
+      "y": 1068,
+      "w": 663,
+      "h": 743,
+      "confidence": 0.737,
+      "method": "hsv_orange_shape"
+    },
+    {
+      "x": 715,
+      "y": 2364,
+      "w": 45,
+      "h": 44,
+      "confidence": 0.652,
+      "method": "hsv_orange_shape"
+    },
+    {
+      "x": 612,
+      "y": 2329,
+      "w": 59,
+      "h": 62,
+      "confidence": 0.642,
+      "method": "hsv_orange_shape"
+    },
+    {
+      "x": 126,
+      "y": 2307,
+      "w": 38,
+      "h": 33,
+      "confidence": 0.589,
+      "method": "hsv_orange_shape"
+    },
+    {
+      "x": 235,
+      "y": 2348,
+      "w": 31,
+      "h": 26,
+      "confidence": 0.542,
+      "method": "hsv_orange_shape"
+    }
+  ]
+}
