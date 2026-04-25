@@ -169,13 +169,15 @@ def _detect_hough_candidates(
     return results, hough_vis
 
 
-def _largest_mask_component(mask: np.ndarray) -> tuple[int, int, int, int, tuple[int, int], float] | None:
+def _largest_mask_component(
+    mask: np.ndarray, min_area: float = 150
+) -> tuple[int, int, int, int, tuple[int, int], float] | None:
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     best_contour = None
     best_area = 0.0
     for contour in contours:
         area = float(cv2.contourArea(contour))
-        if area < 150:
+        if area < min_area:
             continue
         if area > best_area:
             best_area = area
@@ -211,8 +213,15 @@ def detect_ball(image_bgr: np.ndarray) -> list[DetectionResult]:
     return detections
 
 
+def detect_ball_video(image_bgr: np.ndarray) -> list[DetectionResult]:
+    """Video-tuned detection that is more sensitive to red/orange components."""
+    detections, _, _, _, _ = detect_ball_with_mask(image_bgr, video_mode=True)
+    return detections
+
+
 def detect_ball_with_mask(
     image_bgr: np.ndarray,
+    video_mode: bool = False,
 ) -> tuple[list[DetectionResult], np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Detect candidates and return colored/white/combined masks + Hough preview."""
     proc, scale = _resize_for_processing(image_bgr)
@@ -223,7 +232,11 @@ def detect_ball_with_mask(
     combined = cv2.bitwise_or(colored, white)
 
     candidates, hough_vis = _detect_hough_candidates(proc, colored, white)
-    component = _largest_mask_component(combined)
+    if video_mode:
+        colored_component = _largest_mask_component(colored, min_area=35)
+        component = colored_component or _largest_mask_component(combined, min_area=50)
+    else:
+        component = _largest_mask_component(combined)
     final_candidates: list[DetectionResult] = []
 
     if component is not None:
@@ -245,7 +258,12 @@ def detect_ball_with_mask(
                 best_score = score
                 best = cand
 
-        if best is not None:
+        colored_ratio, white_ratio = _component_mask_ratios(colored, white, comp_x, comp_y, comp_w, comp_h)
+        use_video_component_fallback = (
+            video_mode and colored_ratio >= white_ratio and (best is None or best_score < 0.55)
+        )
+
+        if best is not None and not use_video_component_fallback:
             # Fuse mask component and best circle for one clean final detection.
             bx1 = min(comp_x, best.x)
             by1 = min(comp_y, best.y)
@@ -255,7 +273,6 @@ def detect_ball_with_mask(
             fy = int(max(0, by1))
             fw = int(min(combined.shape[1] - fx, bx2 - bx1))
             fh = int(min(combined.shape[0] - fy, by2 - by1))
-            colored_ratio, white_ratio = _component_mask_ratios(colored, white, comp_x, comp_y, comp_w, comp_h)
             final_label = "colored_golf_ball_candidate" if colored_ratio >= white_ratio else "white_golf_ball_candidate"
             final_conf = round(float(min(1.0, max(best.confidence, 0.55 + 0.25 * max(colored_ratio, white_ratio)))), 3)
             final_candidates = [
@@ -273,9 +290,13 @@ def detect_ball_with_mask(
                 )
             ]
         else:
-            # Fallback: largest component only when Hough is not usable.
-            colored_ratio, white_ratio = _component_mask_ratios(colored, white, comp_x, comp_y, comp_w, comp_h)
+            # Fallback: largest component when Hough is absent or too weak for video frames.
             final_label = "colored_golf_ball_candidate" if colored_ratio >= white_ratio else "white_golf_ball_candidate"
+            selection_method = (
+                "video_colored_component_fallback"
+                if use_video_component_fallback
+                else "largest_mask_component_fallback"
+            )
             final_candidates = [
                 DetectionResult(
                     x=comp_x,
@@ -287,7 +308,7 @@ def detect_ball_with_mask(
                     circularity=0.85,
                     area=round(float(comp_area), 1),
                     detector_type="largest_component_fallback",
-                    selection_method="largest_mask_component_fallback",
+                    selection_method=selection_method,
                 )
             ]
 

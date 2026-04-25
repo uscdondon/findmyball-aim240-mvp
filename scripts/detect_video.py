@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app.services.detector import annotate_image, detect_ball  # noqa: E402
+from app.services.detector import annotate_image, detect_ball_video  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
@@ -50,6 +50,7 @@ def detection_row(video_path: Path, frame_index: int, timestamp: float, det, fra
         "video_path": str(video_path),
         "frame_index": frame_index,
         "timestamp_seconds": round(timestamp, 3),
+        "detected": True,
         "label": det.label,
         "confidence": float(det.confidence),
         "x": int(det.x),
@@ -70,6 +71,7 @@ def empty_row(video_path: Path, frame_index: int, timestamp: float, frame_path: 
         "video_path": str(video_path),
         "frame_index": frame_index,
         "timestamp_seconds": round(timestamp, 3),
+        "detected": False,
         "label": "",
         "confidence": "",
         "x": "",
@@ -190,7 +192,7 @@ def main() -> None:
             print(f"Processing frame {frame_index}...")
             timestamp = frame_index / fps
             resized_frame = resize_frame(frame, args.resize_width)
-            detections = detect_ball(resized_frame)
+            detections = detect_ball_video(resized_frame)
             output_frame = annotate_image(resized_frame, detections)
             frame_path = frames_dir / f"{stem}_frame_{frame_index:06d}_annotated.jpg"
             cv2.imwrite(str(frame_path), output_frame)
@@ -230,6 +232,7 @@ def main() -> None:
         "video_path",
         "frame_index",
         "timestamp_seconds",
+        "detected",
         "label",
         "confidence",
         "x",
