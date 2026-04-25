@@ -167,6 +167,33 @@ def _detect_hough_candidates(
     return results, hough_vis
 
 
+def _iou(a: DetectionResult, b: DetectionResult) -> float:
+    ax2, ay2 = a.x + a.w, a.y + a.h
+    bx2, by2 = b.x + b.w, b.y + b.h
+    inter_x1 = max(a.x, b.x)
+    inter_y1 = max(a.y, b.y)
+    inter_x2 = min(ax2, bx2)
+    inter_y2 = min(ay2, by2)
+    inter_w = max(0, inter_x2 - inter_x1)
+    inter_h = max(0, inter_y2 - inter_y1)
+    inter_area = inter_w * inter_h
+    if inter_area <= 0:
+        return 0.0
+    union = (a.w * a.h) + (b.w * b.h) - inter_area
+    return inter_area / float(max(1, union))
+
+
+def _dedupe_overlapping_candidates(
+    candidates: list[DetectionResult], iou_threshold: float = 0.45
+) -> list[DetectionResult]:
+    kept: list[DetectionResult] = []
+    for cand in sorted(candidates, key=lambda d: (d.confidence, d.w * d.h), reverse=True):
+        if any(_iou(cand, existing) >= iou_threshold for existing in kept):
+            continue
+        kept.append(cand)
+    return kept
+
+
 def detect_ball(image_bgr: np.ndarray) -> list[DetectionResult]:
     """Detect visible golf ball candidates using Hough circles + mask scoring."""
     detections, _, _, _, _ = detect_ball_with_mask(image_bgr)
@@ -185,8 +212,9 @@ def detect_ball_with_mask(
     combined = cv2.bitwise_or(colored, white)
 
     candidates, hough_vis = _detect_hough_candidates(proc, colored, white)
+    candidates = _dedupe_overlapping_candidates(candidates)
     candidates.sort(key=lambda d: (d.confidence, d.w * d.h), reverse=True)
-    candidates = candidates[:5]
+    candidates = candidates[:3]
 
     if scale != 1.0:
         inv = 1.0 / scale
