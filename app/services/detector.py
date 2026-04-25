@@ -21,6 +21,7 @@ class DetectionResult:
     circularity: float
     area: float
     detector_type: str
+    selection_method: str
 
 
 def _resize_for_processing(image_bgr: np.ndarray, max_dim: int = 1400) -> tuple[np.ndarray, float]:
@@ -161,37 +162,47 @@ def _detect_hough_candidates(
                 circularity=round(float(circularity), 3),
                 area=round(area, 1),
                 detector_type=detector_type,
+                selection_method="hough_candidate_only",
             )
         )
 
     return results, hough_vis
 
 
-def _iou(a: DetectionResult, b: DetectionResult) -> float:
-    ax2, ay2 = a.x + a.w, a.y + a.h
-    bx2, by2 = b.x + b.w, b.y + b.h
-    inter_x1 = max(a.x, b.x)
-    inter_y1 = max(a.y, b.y)
-    inter_x2 = min(ax2, bx2)
-    inter_y2 = min(ay2, by2)
-    inter_w = max(0, inter_x2 - inter_x1)
-    inter_h = max(0, inter_y2 - inter_y1)
-    inter_area = inter_w * inter_h
-    if inter_area <= 0:
-        return 0.0
-    union = (a.w * a.h) + (b.w * b.h) - inter_area
-    return inter_area / float(max(1, union))
-
-
-def _dedupe_overlapping_candidates(
-    candidates: list[DetectionResult], iou_threshold: float = 0.45
-) -> list[DetectionResult]:
-    kept: list[DetectionResult] = []
-    for cand in sorted(candidates, key=lambda d: (d.confidence, d.w * d.h), reverse=True):
-        if any(_iou(cand, existing) >= iou_threshold for existing in kept):
+def _largest_mask_component(mask: np.ndarray) -> tuple[int, int, int, int, tuple[int, int], float] | None:
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    best_contour = None
+    best_area = 0.0
+    for contour in contours:
+        area = float(cv2.contourArea(contour))
+        if area < 150:
             continue
-        kept.append(cand)
-    return kept
+        if area > best_area:
+            best_area = area
+            best_contour = contour
+    if best_contour is None:
+        return None
+
+    x, y, w, h = cv2.boundingRect(best_contour)
+    moments = cv2.moments(best_contour)
+    if moments["m00"] > 0:
+        cx = int(moments["m10"] / moments["m00"])
+        cy = int(moments["m01"] / moments["m00"])
+    else:
+        cx = x + w // 2
+        cy = y + h // 2
+    return int(x), int(y), int(w), int(h), (cx, cy), float(best_area)
+
+
+def _component_mask_ratios(
+    colored: np.ndarray, white: np.ndarray, x: int, y: int, w: int, h: int
+) -> tuple[float, float]:
+    comp = np.zeros(colored.shape, dtype=np.uint8)
+    cv2.rectangle(comp, (x, y), (x + w, y + h), 255, -1)
+    pix = max(1, cv2.countNonZero(comp))
+    colored_ratio = cv2.countNonZero(cv2.bitwise_and(colored, comp)) / float(pix)
+    white_ratio = cv2.countNonZero(cv2.bitwise_and(white, comp)) / float(pix)
+    return colored_ratio, white_ratio
 
 
 def detect_ball(image_bgr: np.ndarray) -> list[DetectionResult]:
@@ -212,13 +223,77 @@ def detect_ball_with_mask(
     combined = cv2.bitwise_or(colored, white)
 
     candidates, hough_vis = _detect_hough_candidates(proc, colored, white)
-    candidates = _dedupe_overlapping_candidates(candidates)
-    candidates.sort(key=lambda d: (d.confidence, d.w * d.h), reverse=True)
-    candidates = candidates[:3]
+    component = _largest_mask_component(combined)
+    final_candidates: list[DetectionResult] = []
+
+    if component is not None:
+        comp_x, comp_y, comp_w, comp_h, (comp_cx, comp_cy), comp_area = component
+        comp_r_est = max(8.0, 0.25 * (comp_w + comp_h))
+        best: DetectionResult | None = None
+        best_score = -1.0
+
+        for cand in candidates:
+            cand_cx = cand.x + cand.w // 2
+            cand_cy = cand.y + cand.h // 2
+            cand_r = 0.5 * max(cand.w, cand.h)
+            inside_component = 1.0 if combined[min(max(cand_cy, 0), combined.shape[0] - 1), min(max(cand_cx, 0), combined.shape[1] - 1)] > 0 else 0.0
+            dist = float(np.hypot(cand_cx - comp_cx, cand_cy - comp_cy))
+            center_score = max(0.0, 1.0 - dist / max(1.0, 1.2 * comp_r_est))
+            radius_score = max(0.0, 1.0 - abs(cand_r - comp_r_est) / max(1.0, comp_r_est))
+            score = 0.45 * cand.confidence + 0.30 * inside_component + 0.15 * center_score + 0.10 * radius_score
+            if score > best_score:
+                best_score = score
+                best = cand
+
+        if best is not None:
+            # Fuse mask component and best circle for one clean final detection.
+            bx1 = min(comp_x, best.x)
+            by1 = min(comp_y, best.y)
+            bx2 = max(comp_x + comp_w, best.x + best.w)
+            by2 = max(comp_y + comp_h, best.y + best.h)
+            fx = int(max(0, bx1))
+            fy = int(max(0, by1))
+            fw = int(min(combined.shape[1] - fx, bx2 - bx1))
+            fh = int(min(combined.shape[0] - fy, by2 - by1))
+            colored_ratio, white_ratio = _component_mask_ratios(colored, white, comp_x, comp_y, comp_w, comp_h)
+            final_label = "colored_golf_ball_candidate" if colored_ratio >= white_ratio else "white_golf_ball_candidate"
+            final_conf = round(float(min(1.0, max(best.confidence, 0.55 + 0.25 * max(colored_ratio, white_ratio)))), 3)
+            final_candidates = [
+                DetectionResult(
+                    x=fx,
+                    y=fy,
+                    w=max(1, fw),
+                    h=max(1, fh),
+                    confidence=final_conf,
+                    label=final_label,
+                    circularity=1.0,
+                    area=round(float(comp_area), 1),
+                    detector_type="hough_plus_component_fusion",
+                    selection_method="largest_mask_component_plus_hough_circle",
+                )
+            ]
+        else:
+            # Fallback: largest component only when Hough is not usable.
+            colored_ratio, white_ratio = _component_mask_ratios(colored, white, comp_x, comp_y, comp_w, comp_h)
+            final_label = "colored_golf_ball_candidate" if colored_ratio >= white_ratio else "white_golf_ball_candidate"
+            final_candidates = [
+                DetectionResult(
+                    x=comp_x,
+                    y=comp_y,
+                    w=comp_w,
+                    h=comp_h,
+                    confidence=round(float(min(1.0, 0.55 + 0.30 * max(colored_ratio, white_ratio))), 3),
+                    label=final_label,
+                    circularity=0.85,
+                    area=round(float(comp_area), 1),
+                    detector_type="largest_component_fallback",
+                    selection_method="largest_mask_component_fallback",
+                )
+            ]
 
     if scale != 1.0:
         inv = 1.0 / scale
-        for det in candidates:
+        for det in final_candidates:
             det.x = int(round(det.x * inv))
             det.y = int(round(det.y * inv))
             det.w = int(round(det.w * inv))
@@ -230,7 +305,7 @@ def detect_ball_with_mask(
         combined = cv2.resize(combined, (out_w, out_h), interpolation=cv2.INTER_NEAREST)
         hough_vis = cv2.resize(hough_vis, (out_w, out_h), interpolation=cv2.INTER_LINEAR)
 
-    return candidates, colored, white, combined, hough_vis
+    return final_candidates[:1], colored, white, combined, hough_vis
 
 
 def annotate_image(image_bgr: np.ndarray, detections: list[DetectionResult]) -> np.ndarray:
