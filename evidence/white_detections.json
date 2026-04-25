@@ -6,7 +6,7 @@
   "combined_mask_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/white_combined_mask.png",
   "hough_candidates_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/white_hough_candidates.png",
   "detections_json_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/white_detections.json",
-  "count": 5,
+  "count": 1,
   "detections": [
     {
       "x": 933,
@@ -14,54 +14,10 @@
       "w": 1475,
       "h": 1475,
       "label": "white_golf_ball_candidate",
-      "confidence": 0.707,
+      "confidence": 0.729,
       "circularity": 1.0,
-      "area": 1707712.5,
-      "detector_type": "hough_plus_white_mask"
-    },
-    {
-      "x": 772,
-      "y": 1103,
-      "w": 1492,
-      "h": 1492,
-      "label": "white_golf_ball_candidate",
-      "confidence": 0.7,
-      "circularity": 1.0,
-      "area": 1747971.8,
-      "detector_type": "hough_plus_white_mask"
-    },
-    {
-      "x": 631,
-      "y": 1138,
-      "w": 1601,
-      "h": 1601,
-      "label": "white_golf_ball_candidate",
-      "confidence": 0.688,
-      "circularity": 1.0,
-      "area": 2013837.2,
-      "detector_type": "hough_plus_white_mask"
-    },
-    {
-      "x": 1071,
-      "y": 1025,
-      "w": 1549,
-      "h": 1549,
-      "label": "white_golf_ball_candidate",
-      "confidence": 0.686,
-      "circularity": 1.0,
-      "area": 1885556.0,
-      "detector_type": "hough_plus_white_mask"
-    },
-    {
-      "x": 588,
-      "y": 732,
-      "w": 1572,
-      "h": 1572,
-      "label": "white_golf_ball_candidate",
-      "confidence": 0.685,
-      "circularity": 1.0,
-      "area": 1942049.2,
-      "detector_type": "hough_plus_white_mask"
+      "area": 531177.5,
+      "detector_type": "hough_plus_component_fusion"
     }
   ]
 }
