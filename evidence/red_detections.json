@@ -1,0 +1,67 @@
+{
+  "image_path": "input/red.png",
+  "annotated_image_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/red_annotated.png",
+  "colored_mask_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/red_colored_mask.png",
+  "white_mask_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/red_white_mask.png",
+  "combined_mask_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/red_combined_mask.png",
+  "hough_candidates_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/red_hough_candidates.png",
+  "detections_json_path": "/Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/output/red_detections.json",
+  "count": 5,
+  "detections": [
+    {
+      "x": 645,
+      "y": 118,
+      "w": 1722,
+      "h": 1722,
+      "label": "colored_golf_ball_candidate",
+      "confidence": 0.617,
+      "circularity": 1.0,
+      "area": 2329577.6,
+      "detector_type": "hough_plus_colored_mask"
+    },
+    {
+      "x": 789,
+      "y": 366,
+      "w": 1722,
+      "h": 1722,
+      "label": "colored_golf_ball_candidate",
+      "confidence": 0.615,
+      "circularity": 1.0,
+      "area": 2329577.6,
+      "detector_type": "hough_plus_colored_mask"
+    },
+    {
+      "x": 976,
+      "y": 611,
+      "w": 1555,
+      "h": 1555,
+      "label": "colored_golf_ball_candidate",
+      "confidence": 0.615,
+      "circularity": 1.0,
+      "area": 1899600.9,
+      "detector_type": "hough_plus_colored_mask"
+    },
+    {
+      "x": 1028,
+      "y": 564,
+      "w": 1688,
+      "h": 1688,
+      "label": "colored_golf_ball_candidate",
+      "confidence": 0.614,
+      "circularity": 1.0,
+      "area": 2237021.2,
+      "detector_type": "hough_plus_colored_mask"
+    },
+    {
+      "x": 204,
+      "y": 622,
+      "w": 1601,
+      "h": 1601,
+      "label": "colored_golf_ball_candidate",
+      "confidence": 0.612,
+      "circularity": 1.0,
+      "area": 2013837.2,
+      "detector_type": "hough_plus_colored_mask"
+    }
+  ]
+}
