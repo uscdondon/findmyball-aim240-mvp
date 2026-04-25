@@ -28,6 +28,7 @@ app/
     detector.py
 scripts/
   detect_image.py
+  detect_video.py
   extract_frames.py
 input/
 output/
@@ -48,6 +49,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/detect_image.py input/sample.png
+python scripts/detect_video.py videos/sample.mov --every 5
 python scripts/extract_frames.py videos/sample.mov --every 10
 ```
 
@@ -82,6 +84,12 @@ This baseline can also detect orange UI elements or thumbnails, because it detec
 - Input: video path + `--every N`
 - Output files:
   - `output/frames/<video_stem>_frame_000000.jpg` (and so on)
+
+### 4) Video Batch Detection CLI (`scripts/detect_video.py`)
+
+Still images are useful detector tests, but the real capstone direction is putt/chip-shot video. `detect_video.py` runs the current baseline detector across sampled video frames, saves annotated frames, writes JSON/CSV detection summaries, and attempts an annotated MP4 output.
+
+Future work will add tracking across frames and final resting-location estimation.
 
 ## Minimal FastAPI Skeleton Included
 
