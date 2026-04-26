@@ -25,6 +25,9 @@ The baseline method currently uses:
 - largest-mask-component plus Hough-circle selection
 - one dominant detection candidate per still image
 - sampled frame processing for video
+- per-frame center-point extraction (`center_x`, `center_y`) plus basic trajectory summary across sampled frames
+
+The video pipeline now outputs an early trajectory summary from detected center points. `trajectory_summary` includes first/last detection frame, start/end center, `delta_x`, `delta_y`, total pixel displacement, and a simple movement direction label. This is not final resting-location estimation yet; it is an early bridge from frame detection toward putt/chip tracking.
 
 ## Evidence
 
@@ -83,14 +86,14 @@ python scripts/detect_video.py videos/red_micro_putt.MOV --every 15 --max-frames
 - Controlled close-up video only so far
 - Bounding boxes are intentionally generous
 - May fail with fast motion, distant balls, motion blur, or cluttered scenes
-- No trajectory estimate yet
+- Trajectory summary is basic and based on sampled detections only
 - No final resting-location estimate yet
 - No FastAPI/Docker/frontend layer yet
 
 ## Next Steps
 
 - test white-ball micro-putt video
-- add trajectory estimate from detected center points
+- strengthen trajectory modeling beyond basic center-point displacement
 - prepare YOLO dataset structure
 - train YOLO detector
 - wrap model in FastAPI/Docker later
