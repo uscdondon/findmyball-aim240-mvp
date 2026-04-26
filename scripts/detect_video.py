@@ -103,19 +103,21 @@ def movement_direction(delta_x: float, delta_y: float) -> str:
     return "mostly_down" if delta_y > 0 else "mostly_up"
 
 
-def build_trajectory_summary(rows: list[dict]) -> dict:
-    detections = [row for row in rows if row["label"]]
-    if not detections:
+def build_trajectory_summary(rows: list[dict], frames_processed: int) -> dict:
+    detections = [row for row in rows if row["detected"]]
+    if len(detections) < 2:
+        first = detections[0] if detections else None
         return {
-            "frames_with_detections": 0,
-            "first_detection_frame": None,
-            "last_detection_frame": None,
-            "start_center": None,
-            "end_center": None,
+            "frames_processed": frames_processed,
+            "frames_with_detections": len(detections),
+            "first_detection_frame": int(first["frame_index"]) if first else None,
+            "last_detection_frame": int(first["frame_index"]) if first else None,
+            "start_center": [float(first["center_x"]), float(first["center_y"])] if first else None,
+            "end_center": [float(first["center_x"]), float(first["center_y"])] if first else None,
             "delta_x": 0,
             "delta_y": 0,
             "total_pixel_displacement": 0,
-            "movement_direction_simple": "minimal_movement",
+            "movement_direction_simple": "insufficient_detections",
         }
 
     first = detections[0]
@@ -126,6 +128,7 @@ def build_trajectory_summary(rows: list[dict]) -> dict:
     delta_y = end_center[1] - start_center[1]
     displacement = math.hypot(delta_x, delta_y)
     return {
+        "frames_processed": frames_processed,
         "frames_with_detections": len(detections),
         "first_detection_frame": int(first["frame_index"]),
         "last_detection_frame": int(last["frame_index"]),
@@ -214,7 +217,7 @@ def main() -> None:
 
     json_path = output_dir / f"{stem}_video_detections.json"
     csv_path = output_dir / f"{stem}_video_detections.csv"
-    trajectory_summary = build_trajectory_summary(rows)
+    trajectory_summary = build_trajectory_summary(rows, processed_frames)
     summary = {
         "video_path": str(video_path),
         "processed_every_n_frames": args.every,
