@@ -57,6 +57,7 @@ scripts/
   detect_image.py
   detect_video.py
   prepare_yolo_dataset.py
+  seed_yolo_images.py
   extract_frames.py
 data/
   yolo/
@@ -123,6 +124,14 @@ Use this utility to count images/labels and warn about missing labels:
 ```bash
 python scripts/prepare_yolo_dataset.py
 ```
+
+Use this utility to copy still images or sampled video frames into a YOLO image split for later manual labeling:
+
+```bash
+python scripts/seed_yolo_images.py input/red.png input/white.png videos/red_micro_putt_trimmed.mp4 --every 15 --max-frames 30 --split train
+```
+
+`seed_yolo_images.py` does not create label files or fake annotations. It only prepares images for later manual labeling.
 
 ## Known Limitations
 
