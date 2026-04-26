@@ -38,3 +38,5 @@ data/yolo/labels/**/*.cache
 !data/yolo/dataset.yaml
 !data/yolo/**/.gitkeep
 
+runs/
+yolov8n.pt
