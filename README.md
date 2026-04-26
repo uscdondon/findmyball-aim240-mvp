@@ -58,6 +58,7 @@ scripts/
   detect_video.py
   prepare_yolo_dataset.py
   seed_yolo_images.py
+  split_yolo_dataset.py
   extract_frames.py
 data/
   yolo/
@@ -132,6 +133,13 @@ python scripts/seed_yolo_images.py input/red.png input/white.png videos/red_micr
 ```
 
 `seed_yolo_images.py` does not create label files or fake annotations. It only prepares images for later manual labeling.
+
+After labels exist, use this utility to move a reproducible portion of complete image-label pairs from train to validation:
+
+```bash
+python scripts/split_yolo_dataset.py --dry-run
+python scripts/split_yolo_dataset.py --apply
+```
 
 ## Initial YOLO Seed Dataset
 
