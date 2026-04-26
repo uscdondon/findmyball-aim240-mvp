@@ -133,6 +133,15 @@ python scripts/seed_yolo_images.py input/red.png input/white.png videos/red_micr
 
 `seed_yolo_images.py` does not create label files or fake annotations. It only prepares images for later manual labeling.
 
+## Initial YOLO Seed Dataset
+
+- The project now includes an initial labeled YOLO seed dataset.
+- The dataset currently contains 21 labeled training images.
+- The class list has one class: `golf_ball`.
+- Labels were created manually using [makesense.ai](https://www.makesense.ai/).
+- This dataset is a seed for future YOLO training, not a production-scale dataset.
+- Red/orange and white ball examples are included.
+
 ## Known Limitations
 
 - Baseline only; not YOLO-based yet
