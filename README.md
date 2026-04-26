@@ -181,6 +181,14 @@ yolo detect predict \
 
 This smoke test validates the YOLO training pipeline but does not prove robust golf-ball detection yet. More labeled images, more diverse frames, and longer training will be required.
 
+The first YOLO smoke model trained successfully and produced model weights, but prediction on the 5-image validation set produced no detections. This is acceptable for the smoke-test stage because the purpose was to validate dataset structure, labels, and training execution. Improving YOLO detection quality requires more labeled images, more varied frames, and longer training.
+
+YOLO smoke-test evidence artifacts (if present):
+
+- `evidence/yolo_smoke_test/results.csv`
+- `evidence/yolo_smoke_test/labels.jpg`
+- `evidence/yolo_smoke_test/results.png`
+
 ## Known Limitations
 
 - Baseline only; not YOLO-based yet
