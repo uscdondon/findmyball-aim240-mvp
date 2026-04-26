@@ -56,7 +56,20 @@ app/
 scripts/
   detect_image.py
   detect_video.py
+  prepare_yolo_dataset.py
   extract_frames.py
+data/
+  yolo/
+    images/
+      train/
+      val/
+      test/
+    labels/
+      train/
+      val/
+      test/
+    dataset.yaml
+    README.md
 input/
 output/
 videos/
@@ -78,6 +91,37 @@ pip install -r requirements.txt
 python scripts/detect_image.py input/red.png
 python scripts/detect_image.py input/white.png
 python scripts/detect_video.py videos/red_micro_putt.MOV --every 15 --max-frames 20 --resize-width 720
+python scripts/prepare_yolo_dataset.py
+```
+
+## YOLO Dataset Structure
+
+This is the next layer after the baseline detector. The baseline detector proves the computer vision pipeline, while the YOLO dataset scaffold prepares the project for future trained object detection. YOLO training has not been run yet.
+
+Place images in:
+
+- `data/yolo/images/train`
+- `data/yolo/images/val`
+- `data/yolo/images/test`
+
+Place matching label files in:
+
+- `data/yolo/labels/train`
+- `data/yolo/labels/val`
+- `data/yolo/labels/test`
+
+Each label file uses YOLO format:
+
+```text
+class_id x_center y_center width height
+```
+
+All coordinate values are normalized from `0` to `1`. Class `0` means `golf_ball`.
+
+Use this utility to count images/labels and warn about missing labels:
+
+```bash
+python scripts/prepare_yolo_dataset.py
 ```
 
 ## Known Limitations

@@ -27,3 +27,14 @@ models/*
 *.engine
 *.weights
 
+# Future YOLO dataset media can be large; keep metadata and placeholders.
+data/yolo/images/**/*
+data/yolo/labels/**/*.cache
+!data/yolo/images/
+!data/yolo/images/**/
+!data/yolo/labels/
+!data/yolo/labels/**/
+!data/yolo/README.md
+!data/yolo/dataset.yaml
+!data/yolo/**/.gitkeep
+
