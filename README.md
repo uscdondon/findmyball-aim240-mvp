@@ -189,6 +189,23 @@ YOLO smoke-test evidence artifacts (if present):
 - `evidence/yolo_smoke_test/labels.jpg`
 - `evidence/yolo_smoke_test/results.png`
 
+## Current Status: End-to-End Smoke-Test Pipeline Complete
+
+The project now supports an end-to-end ML workflow at the smoke-test level. Starting from iPhone-captured golf-ball imagery and video frames, the project can seed a YOLO dataset, validate image/label pairs, split data into training and validation sets, train a YOLOv8n model, generate local model weights, and run inference against validation images.
+
+Pipeline summary:
+
+`data capture -> frame extraction -> YOLO labeling -> dataset validation -> train/val split -> YOLO training -> inference`
+
+Current interpretation:
+
+- This does not mean the model is production-ready.
+- The current dataset is intentionally small.
+- The first YOLO smoke model trained successfully and produced weights.
+- The first YOLO smoke model did not yet produce reliable detections on validation images.
+- The achievement at this stage is that the full training/inference pipeline is operational.
+- The next improvements are additional labeled data, better frame sampling, more diverse examples, and longer training.
+
 ## Known Limitations
 
 - Baseline only; not YOLO-based yet
