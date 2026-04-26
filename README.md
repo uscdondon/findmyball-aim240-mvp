@@ -150,6 +150,37 @@ python scripts/split_yolo_dataset.py --apply
 - This dataset is a seed for future YOLO training, not a production-scale dataset.
 - Red/orange and white ball examples are included.
 
+## YOLO Smoke Training
+
+The project now has a small labeled YOLO seed dataset and can run a tiny YOLOv8n smoke training run. This is not a final accurate model; it is a validation that the dataset structure, labels, and training pipeline work.
+
+- YOLOv8n trained successfully for 3 epochs.
+- The dataset used 16 training images and 5 validation images.
+- Training produced `best.pt` and `last.pt` locally.
+- Training artifacts live under `runs/` and are ignored because they can become large.
+
+```bash
+pip install ultralytics
+
+yolo detect train \
+  model=yolov8n.pt \
+  data=data/yolo/dataset.yaml \
+  epochs=3 \
+  imgsz=640 \
+  batch=4 \
+  project=runs/findmyball \
+  name=yolo_smoke_test
+
+yolo detect predict \
+  model=runs/detect/runs/findmyball/yolo_smoke_test/weights/best.pt \
+  source=data/yolo/images/val \
+  project=runs/findmyball \
+  name=yolo_smoke_predictions \
+  save=True
+```
+
+This smoke test validates the YOLO training pipeline but does not prove robust golf-ball detection yet. More labeled images, more diverse frames, and longer training will be required.
+
 ## Known Limitations
 
 - Baseline only; not YOLO-based yet
