@@ -40,3 +40,5 @@ data/yolo/labels/**/*.cache
 
 runs/
 yolov8n.pt
+raw_media/
+tmp/
