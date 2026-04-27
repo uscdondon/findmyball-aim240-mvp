@@ -189,6 +189,25 @@ YOLO smoke-test evidence artifacts (if present):
 - `evidence/yolo_smoke_test/labels.jpg`
 - `evidence/yolo_smoke_test/results.png`
 
+### Batch 02 Training Result
+
+Batch 02 trained for 15 epochs on the enlarged labeled dataset and produced local `best.pt` and `last.pt` weights. This is still experimental work, not a production-grade detector.
+
+- Reported validation metrics improved on the small 5-image validation set.
+- Visual prediction at default confidence did not show reliable boxes.
+- A low-confidence prediction run with `conf=0.05` produced one correct golf-ball detection at confidence around 0.08.
+
+Together, these observations suggest the model has begun to learn the `golf_ball` class, but the detector remains weak and not robust. This is not reliable detection under normal thresholds and should not be interpreted as production performance.
+
+The next improvement is more labeled examples, especially varied video frames, distances, lighting, and ball colors.
+
+Batch 02 evidence (if present):
+
+- `evidence/yolo_batch_02/yolo_batch_02_low_conf_prediction_example.jpg`
+- `evidence/yolo_batch_02/results.csv`
+- `evidence/yolo_batch_02/results.png`
+- `evidence/yolo_batch_02/labels.jpg`
+
 ## Current Status: End-to-End Smoke-Test Pipeline Complete
 
 The project now supports an end-to-end ML workflow at the smoke-test level. Starting from iPhone-captured golf-ball imagery and video frames, the project can seed a YOLO dataset, validate image/label pairs, split data into training and validation sets, train a YOLOv8n model, generate local model weights, and run inference against validation images.
