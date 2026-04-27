@@ -60,3 +60,7 @@ python scripts/prepare_yolo_dataset.py
 - Do not build frontend before model/pipeline is stronger.
 - Do not overclaim model accuracy.
 - Do not delete runs/ unless sure.
+
+## 2026-04-26 Evening Note
+
+New red and white labeled still-image data was added. Additional red/white videos exist in raw_media/2026-04-26 and should be processed later into YOLO frame batches. Do not train again until the video frames are seeded, labeled, and dataset validation is clean.
