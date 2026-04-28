@@ -136,6 +136,12 @@ python scripts/seed_yolo_images.py input/red.png input/white.png videos/red_micr
 
 `seed_yolo_images.py` does not create label files or fake annotations. It only prepares images for later manual labeling.
 
+Future YOLO training images should be compressed JPGs, not full-size PNGs. The image scene should not be cropped tightly around the ball; keep the full training context and make only the label bounding box tight around the ball.
+
+```bash
+python scripts/prepare_training_images.py --input-dir raw_images --output-dir data/yolo/images/train
+```
+
 After labels exist, use this utility to move a reproducible portion of complete image-label pairs from train to validation:
 
 ```bash
