@@ -42,3 +42,4 @@ runs/
 yolov8n.pt
 raw_media/
 tmp/
+**/.DS_Store
