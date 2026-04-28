@@ -243,6 +243,20 @@ python scripts/yolo_predict_compare.py \
   --name yolo_batch_02_compare
 ```
 
+### YOLO Batch 04 Rebalanced Validation Note
+
+Batch 04 rebalanced validation exposed a scale-specific failure mode. The model detects small and medium golf balls confidently, but large close-up white golf balls such as `IMG_7044` and `IMG_7045` are only detected at low confidence.
+
+At `conf=0.05`, `IMG_7044` produced a `golf_ball` detection around `0.21` and `IMG_7045` around `0.11`, but these detections do not survive normal confidence thresholds. This indicates the model is learning the pattern but still needs more large close-up examples and improved localization.
+
+Next data priority:
+
+- large close-up white balls
+- large close-up red/orange balls
+- tight labels around the visible ball
+- more varied lighting and angles
+- keep `IMG_7044` and `IMG_7045` as hard validation examples
+
 ## Current Status: End-to-End Smoke-Test Pipeline Complete
 
 The project now supports an end-to-end ML workflow at the smoke-test level. Starting from iPhone-captured golf-ball imagery and video frames, the project can seed a YOLO dataset, validate image/label pairs, split data into training and validation sets, train a YOLOv8n model, generate local model weights, and run inference against validation images.

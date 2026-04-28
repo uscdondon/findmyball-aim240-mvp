@@ -79,3 +79,7 @@ New red and white labeled still-image data was added. Additional red/white video
 ## 2026-04-27 Size Balance Note
 
 The size bucket report showed the validation set had no large golf-ball examples. Before retraining or evaluating Batch 03-style runs, rebalance validation so small, medium, and large golf-ball examples are represented.
+
+## Batch 04 Rebalanced Validation Note
+
+Batch 04 rebalanced validation exposed a scale-specific failure mode: small and medium examples detect strongly, but large close-up white golf balls (notably `IMG_7044` and `IMG_7045`) are still weak at normal confidence thresholds. Next data priority is balanced large close-up white/red-orange examples, tight visible-ball labels, and more lighting/angle variation while keeping hard large-example validation images in place.
