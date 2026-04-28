@@ -24,6 +24,14 @@ The current YOLO smoke model trained successfully and produced local weights, bu
 
 ## Next Engineering Priorities
 
+Next immediate priorities:
+
+- Run dataset audit.
+- Add more labeled video frames.
+- Rebalance train/val after adding data.
+- Train Batch 03 with more data.
+- Compare predictions at conf=0.05, 0.10, 0.25.
+
 1. Add more labeled data
    - More red/orange ball frames
    - More white ball frames

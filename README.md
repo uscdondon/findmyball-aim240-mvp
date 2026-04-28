@@ -59,6 +59,8 @@ scripts/
   prepare_yolo_dataset.py
   seed_yolo_images.py
   split_yolo_dataset.py
+  yolo_audit_dataset.py
+  yolo_predict_compare.py
   extract_frames.py
 data/
   yolo/
@@ -141,6 +143,12 @@ python scripts/split_yolo_dataset.py --dry-run
 python scripts/split_yolo_dataset.py --apply
 ```
 
+Use this utility to audit image-label pairing, label formatting, class IDs, normalized coordinates, and bounding-box size statistics:
+
+```bash
+python scripts/yolo_audit_dataset.py
+```
+
 ## Initial YOLO Seed Dataset
 
 - The project now includes an initial labeled YOLO seed dataset.
@@ -207,6 +215,27 @@ Batch 02 evidence (if present):
 - `evidence/yolo_batch_02/results.csv`
 - `evidence/yolo_batch_02/results.png`
 - `evidence/yolo_batch_02/labels.jpg`
+
+### YOLO Batch 02 Interpretation
+
+Batch 02 produced one correct low-confidence golf-ball detection at approximately 0.08 confidence. This indicates the YOLO model has started learning the `golf_ball` class, but the detector is still weak and not robust. Low confidence means the next priority is not model integration; it is improving the dataset.
+
+The next improvement path is:
+
+- audit the current YOLO dataset
+- add more labeled video frames
+- rebalance train/validation splits after adding data
+- retrain as Batch 03 with more data
+- compare predictions at `conf=0.05`, `conf=0.10`, and `conf=0.25`
+
+For visual comparison across confidence thresholds:
+
+```bash
+python scripts/yolo_predict_compare.py \
+  --model runs/findmyball/yolo_batch_02/weights/best.pt \
+  --source data/yolo/images/val \
+  --name yolo_batch_02_compare
+```
 
 ## Current Status: End-to-End Smoke-Test Pipeline Complete
 
