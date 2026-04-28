@@ -6,7 +6,7 @@ The project has an end-to-end smoke-test ML pipeline:
 
 data capture -> frame extraction -> YOLO labeling -> dataset validation -> train/val split -> YOLO training -> inference
 
-The current YOLO smoke model trained successfully and produced local weights, but it did not yet produce reliable detections on validation images. The pipeline works; the model quality is still early-stage.
+The current YOLO workflow trains successfully and produces local weights. Batch 03 now detects validation images strongly, but confidence and localization still vary by object scale. The pipeline works; the model quality is still early-stage.
 
 ## Completed
 
@@ -31,12 +31,15 @@ Next immediate priorities:
 - Rebalance train/val after adding data.
 - Train Batch 03 with more data.
 - Compare predictions at conf=0.05, 0.10, 0.25.
+- Balance close, medium, and far golf-ball examples.
+- Rebalance validation so small, medium, and large examples are represented.
 
 1. Add more labeled data
    - More red/orange ball frames
    - More white ball frames
    - More lighting conditions
    - More distances and camera angles
+   - Balanced close, medium, and far ball examples
 
 2. Improve YOLO training
    - Try more epochs after adding data
@@ -72,3 +75,7 @@ python scripts/prepare_yolo_dataset.py
 ## 2026-04-26 Evening Note
 
 New red and white labeled still-image data was added. Additional red/white videos exist in raw_media/2026-04-26 and should be processed later into YOLO frame batches. Do not train again until the video frames are seeded, labeled, and dataset validation is clean.
+
+## 2026-04-27 Size Balance Note
+
+The size bucket report showed the validation set had no large golf-ball examples. Before retraining or evaluating Batch 03-style runs, rebalance validation so small, medium, and large golf-ball examples are represented.
