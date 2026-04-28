@@ -83,3 +83,36 @@ The size bucket report showed the validation set had no large golf-ball examples
 ## Batch 04 Rebalanced Validation Note
 
 Batch 04 rebalanced validation exposed a scale-specific failure mode: small and medium examples detect strongly, but large close-up white golf balls (notably `IMG_7044` and `IMG_7045`) are still weak at normal confidence thresholds. Next data priority is balanced large close-up white/red-orange examples, tight visible-ball labels, and more lighting/angle variation while keeping hard large-example validation images in place.
+
+## Parking Note - Label Cleanup Needed
+
+Current issue:
+The project has many folders in play, and some YOLO ground-truth labels appear too loose, especially large close-up golf-ball examples such as IMG_7044 and IMG_7045.
+
+Do not continue relabeling while tired.
+
+Next session plan:
+1. Start with git status.
+2. Run:
+   python scripts/yolo_audit_dataset.py
+   python scripts/prepare_yolo_dataset.py
+   python scripts/visualize_yolo_labels.py --split train --max-images 80
+   python scripts/visualize_yolo_labels.py --split val --max-images 20
+3. Open:
+   evidence/label_visual_checks/train
+   evidence/label_visual_checks/val
+4. Make one simple list:
+   tmp/bad_label_stems.txt
+5. Add only image stems whose GROUND-TRUTH label preview is visibly wrong.
+6. Relabel only those images in MakeSense.
+7. Copy corrected labels back into the correct split.
+8. Validate again.
+9. Commit only after visual confirmation.
+
+Important:
+- Do not move images between train and val tonight.
+- Do not train again tonight.
+- Do not process videos tonight.
+- Do not delete raw_media.
+- Do not delete data/yolo.
+- Do not rewrite Git history.
