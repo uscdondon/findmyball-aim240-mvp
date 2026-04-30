@@ -1,0 +1,400 @@
+.
+├── app
+│   ├── __init__.py
+│   ├── api
+│   │   ├── __init__.py
+│   │   └── endpoints.py
+│   ├── main.py
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   └── prediction.py
+│   └── services
+│       ├── __init__.py
+│       └── detector.py
+├── data
+│   └── yolo
+│       ├── dataset.yaml
+│       ├── images
+│       │   ├── test
+│       │   ├── train
+│       │   └── val
+│       ├── labels
+│       │   ├── test
+│       │   ├── train
+│       │   ├── train.cache
+│       │   ├── val
+│       │   └── val.cache
+│       └── README.md
+├── evidence
+│   ├── label_visual_checks
+│   │   ├── train
+│   │   │   ├── IMG_7043_labels.jpg
+│   │   │   ├── IMG_7044_labels.jpg
+│   │   │   ├── IMG_7045_labels.jpg
+│   │   │   ├── IMG_7046_labels.jpg
+│   │   │   ├── IMG_7047_labels.jpg
+│   │   │   ├── IMG_7048_labels.jpg
+│   │   │   ├── IMG_7049_labels.jpg
+│   │   │   ├── IMG_7050_labels.jpg
+│   │   │   ├── IMG_7051_labels.jpg
+│   │   │   ├── IMG_7052_labels.jpg
+│   │   │   ├── IMG_7055_labels.jpg
+│   │   │   ├── IMG_7056_labels.jpg
+│   │   │   ├── IMG_7057_labels.jpg
+│   │   │   ├── IMG_7059_labels.jpg
+│   │   │   ├── IMG_7060_labels.jpg
+│   │   │   ├── IMG_7061_labels.jpg
+│   │   │   ├── IMG_7062_labels.jpg
+│   │   │   ├── IMG_7063_labels.jpg
+│   │   │   ├── IMG_7064_labels.jpg
+│   │   │   ├── red_labels.jpg
+│   │   │   ├── red_micro_putt_trimmed_frame_000020_labels.jpg
+│   │   │   ├── red_micro_putt_trimmed_frame_000030_labels.jpg
+│   │   │   ├── red_micro_putt_trimmed_frame_000050_labels.jpg
+│   │   │   ├── red_micro_putt_trimmed_frame_000060_labels.jpg
+│   │   │   ├── red_micro_putt_trimmed_frame_000070_labels.jpg
+│   │   │   ├── red_micro_putt_trimmed_frame_000080_labels.jpg
+│   │   │   ├── red_micro_putt_trimmed_frame_000090_labels.jpg
+│   │   │   ├── white_labels.jpg
+│   │   │   ├── white_micro_putt_frame_000010_labels.jpg
+│   │   │   ├── white_micro_putt_frame_000020_labels.jpg
+│   │   │   ├── white_micro_putt_frame_000030_labels.jpg
+│   │   │   ├── white_micro_putt_frame_000040_labels.jpg
+│   │   │   ├── white_micro_putt_frame_000050_labels.jpg
+│   │   │   ├── white_micro_putt_frame_000060_labels.jpg
+│   │   │   └── white_micro_putt_frame_000070_labels.jpg
+│   │   └── val
+│   │       ├── IMG_7044_labels.jpg
+│   │       ├── IMG_7045_labels.jpg
+│   │       ├── red_micro_putt_trimmed_frame_000010_labels.jpg
+│   │       ├── red_micro_putt_trimmed_frame_000040_labels.jpg
+│   │       ├── red_micro_putt_trimmed_frame_000100_labels.jpg
+│   │       ├── white_micro_putt_frame_000080_labels.jpg
+│   │       └── white_micro_putt_frame_000090_labels.jpg
+│   ├── red_annotated.png
+│   ├── red_combined_mask.png
+│   ├── red_detections.json
+│   ├── sample_annotated.png
+│   ├── sample_detections.json
+│   ├── sample_mask.png
+│   ├── video
+│   │   ├── red_micro_putt_annotated.mp4
+│   │   ├── red_micro_putt_best_frame_screenshot.png
+│   │   ├── red_micro_putt_trimmed_annotated.mp4
+│   │   ├── red_micro_putt_trimmed_video_detections.csv
+│   │   ├── red_micro_putt_trimmed_video_detections.json
+│   │   ├── red_micro_putt_video_detections.csv
+│   │   ├── red_micro_putt_video_detections.json
+│   │   └── white_ball_detection_frame.png
+│   ├── white_annotated.png
+│   ├── white_combined_mask.png
+│   ├── white_detections.json
+│   ├── yolo_batch_02
+│   │   ├── labels.jpg
+│   │   ├── results.csv
+│   │   ├── results.png
+│   │   └── yolo_batch_02_low_conf_prediction_example.jpg
+│   ├── yolo_batch_02_fixed
+│   ├── yolo_jpg_batch_04_rebalanced
+│   │   └── hard_cases
+│   │       ├── IMG_7044_low_conf_detection.jpg
+│   │       └── IMG_7045_low_conf_detection.jpg
+│   └── yolo_smoke_test
+│       ├── labels.jpg
+│       ├── results.csv
+│       └── results.png
+├── frontend
+├── input
+│   ├── new_2026_04_26
+│   │   ├── red
+│   │   │   ├── IMG_7055.png
+│   │   │   ├── IMG_7056.png
+│   │   │   ├── IMG_7057.png
+│   │   │   ├── IMG_7059.png
+│   │   │   ├── IMG_7060.png
+│   │   │   ├── IMG_7061.png
+│   │   │   ├── IMG_7062.png
+│   │   │   ├── IMG_7063.png
+│   │   │   └── IMG_7064.png
+│   │   └── white
+│   │       ├── IMG_7043.png
+│   │       ├── IMG_7044.png
+│   │       ├── IMG_7045.png
+│   │       ├── IMG_7046.png
+│   │       ├── IMG_7047.png
+│   │       ├── IMG_7048.png
+│   │       ├── IMG_7049.png
+│   │       ├── IMG_7050.png
+│   │       ├── IMG_7051.png
+│   │       └── IMG_7052.png
+│   ├── red.png
+│   ├── sample.png
+│   └── white.png
+├── models
+├── NEXT_STEPS.md
+├── output
+│   ├── frames
+│   ├── red_annotated.png
+│   ├── red_colored_mask.png
+│   ├── red_combined_mask.png
+│   ├── red_detections.json
+│   ├── red_hough_candidates.png
+│   ├── red_micro_putt_annotated.mp4
+│   ├── red_micro_putt_trimmed_annotated.mp4
+│   ├── red_micro_putt_trimmed_video_detections.csv
+│   ├── red_micro_putt_trimmed_video_detections.json
+│   ├── red_micro_putt_video_detections.csv
+│   ├── red_micro_putt_video_detections.json
+│   ├── red_white_mask.png
+│   ├── sample_annotated.png
+│   ├── sample_detections.json
+│   ├── sample_mask.png
+│   ├── video_frames
+│   │   ├── red_micro_putt_frame_000000_annotated.jpg
+│   │   ├── red_micro_putt_frame_000005_annotated.jpg
+│   │   ├── red_micro_putt_frame_000010_annotated.jpg
+│   │   ├── red_micro_putt_frame_000015_annotated.jpg
+│   │   ├── red_micro_putt_frame_000020_annotated.jpg
+│   │   ├── red_micro_putt_frame_000025_annotated.jpg
+│   │   ├── red_micro_putt_frame_000030_annotated.jpg
+│   │   ├── red_micro_putt_frame_000035_annotated.jpg
+│   │   ├── red_micro_putt_frame_000040_annotated.jpg
+│   │   ├── red_micro_putt_frame_000045_annotated.jpg
+│   │   ├── red_micro_putt_frame_000050_annotated.jpg
+│   │   ├── red_micro_putt_frame_000055_annotated.jpg
+│   │   ├── red_micro_putt_frame_000060_annotated.jpg
+│   │   ├── red_micro_putt_frame_000065_annotated.jpg
+│   │   ├── red_micro_putt_frame_000070_annotated.jpg
+│   │   ├── red_micro_putt_frame_000075_annotated.jpg
+│   │   ├── red_micro_putt_frame_000080_annotated.jpg
+│   │   ├── red_micro_putt_frame_000085_annotated.jpg
+│   │   ├── red_micro_putt_frame_000090_annotated.jpg
+│   │   ├── red_micro_putt_frame_000095_annotated.jpg
+│   │   ├── red_micro_putt_frame_000100_annotated.jpg
+│   │   ├── red_micro_putt_frame_000105_annotated.jpg
+│   │   ├── red_micro_putt_frame_000110_annotated.jpg
+│   │   ├── red_micro_putt_frame_000120_annotated.jpg
+│   │   ├── red_micro_putt_frame_000135_annotated.jpg
+│   │   ├── red_micro_putt_frame_000150_annotated.jpg
+│   │   ├── red_micro_putt_frame_000165_annotated.jpg
+│   │   ├── red_micro_putt_frame_000180_annotated.jpg
+│   │   ├── red_micro_putt_frame_000195_annotated.jpg
+│   │   ├── red_micro_putt_frame_000210_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000000_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000003_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000006_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000009_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000012_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000015_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000018_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000021_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000024_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000027_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000030_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000033_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000036_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000039_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000042_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000045_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000048_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000051_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000054_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000057_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000060_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000063_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000066_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000069_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000072_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000075_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000078_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000081_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000084_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000087_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000090_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000093_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000096_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000099_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000102_annotated.jpg
+│   │   ├── red_micro_putt_trimmed_frame_000105_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000000_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000003_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000006_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000009_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000012_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000015_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000018_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000021_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000024_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000027_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000030_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000033_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000036_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000039_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000042_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000045_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000048_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000051_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000054_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000057_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000060_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000063_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000066_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000069_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000072_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000075_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000078_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000081_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000084_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000087_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000090_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000093_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000096_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000099_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000102_annotated.jpg
+│   │   ├── red_micro_putt_trimmed.MOV_frame_000105_annotated.jpg
+│   │   ├── white_micro_putt_frame_000000_annotated.jpg
+│   │   ├── white_micro_putt_frame_000003_annotated.jpg
+│   │   ├── white_micro_putt_frame_000006_annotated.jpg
+│   │   ├── white_micro_putt_frame_000009_annotated.jpg
+│   │   ├── white_micro_putt_frame_000012_annotated.jpg
+│   │   ├── white_micro_putt_frame_000015_annotated.jpg
+│   │   ├── white_micro_putt_frame_000018_annotated.jpg
+│   │   ├── white_micro_putt_frame_000021_annotated.jpg
+│   │   ├── white_micro_putt_frame_000024_annotated.jpg
+│   │   ├── white_micro_putt_frame_000027_annotated.jpg
+│   │   ├── white_micro_putt_frame_000030_annotated.jpg
+│   │   ├── white_micro_putt_frame_000033_annotated.jpg
+│   │   ├── white_micro_putt_frame_000036_annotated.jpg
+│   │   ├── white_micro_putt_frame_000039_annotated.jpg
+│   │   ├── white_micro_putt_frame_000042_annotated.jpg
+│   │   ├── white_micro_putt_frame_000045_annotated.jpg
+│   │   ├── white_micro_putt_frame_000048_annotated.jpg
+│   │   ├── white_micro_putt_frame_000051_annotated.jpg
+│   │   ├── white_micro_putt_frame_000054_annotated.jpg
+│   │   ├── white_micro_putt_frame_000057_annotated.jpg
+│   │   ├── white_micro_putt_frame_000060_annotated.jpg
+│   │   ├── white_micro_putt_frame_000063_annotated.jpg
+│   │   ├── white_micro_putt_frame_000066_annotated.jpg
+│   │   ├── white_micro_putt_frame_000069_annotated.jpg
+│   │   ├── white_micro_putt_frame_000072_annotated.jpg
+│   │   ├── white_micro_putt_frame_000075_annotated.jpg
+│   │   ├── white_micro_putt_frame_000078_annotated.jpg
+│   │   ├── white_micro_putt_frame_000081_annotated.jpg
+│   │   ├── white_micro_putt_frame_000084_annotated.jpg
+│   │   ├── white_micro_putt_frame_000087_annotated.jpg
+│   │   └── white_micro_putt_frame_000090_annotated.jpg
+│   ├── white_annotated.png
+│   ├── white_colored_mask.png
+│   ├── white_combined_mask.png
+│   ├── white_detections.json
+│   ├── white_hough_candidates.png
+│   ├── white_micro_putt_annotated.mp4
+│   ├── white_micro_putt_video_detections.csv
+│   ├── white_micro_putt_video_detections.json
+│   └── white_white_mask.png
+├── raw_media
+│   └── 2026-04-26
+│       ├── red
+│       │   ├── IMG_7055.HEIC
+│       │   ├── IMG_7056.HEIC
+│       │   ├── IMG_7057.HEIC
+│       │   ├── IMG_7059.HEIC
+│       │   ├── IMG_7060.HEIC
+│       │   ├── IMG_7061.HEIC
+│       │   ├── IMG_7062.HEIC
+│       │   ├── IMG_7063.HEIC
+│       │   └── IMG_7064.HEIC
+│       └── white
+│           ├── IMG_7043.HEIC
+│           ├── IMG_7044.HEIC
+│           ├── IMG_7045.HEIC
+│           ├── IMG_7046.HEIC
+│           ├── IMG_7047.HEIC
+│           ├── IMG_7048.HEIC
+│           ├── IMG_7049.HEIC
+│           ├── IMG_7050.HEIC
+│           ├── IMG_7051.HEIC
+│           └── IMG_7052.HEIC
+├── README.md
+├── reports
+│   ├── folder_tree.txt
+│   └── image_inventory.md
+├── requirements.txt
+├── scripts
+│   ├── detect_image.py
+│   ├── detect_video.py
+│   ├── extract_frames.py
+│   ├── inventory_images.py
+│   ├── prepare_training_images.py
+│   ├── prepare_yolo_dataset.py
+│   ├── rebalance_yolo_val_by_size.py
+│   ├── seed_yolo_images.py
+│   ├── split_yolo_dataset.py
+│   ├── visualize_yolo_labels.py
+│   ├── yolo_audit_dataset.py
+│   ├── yolo_predict_compare.py
+│   └── yolo_size_bucket_report.py
+├── tmp
+│   ├── makesense_labels_red_2026_04_26
+│   ├── makesense_labels_red_2026_04_26_manual
+│   │   ├── IMG_7055.txt
+│   │   ├── IMG_7056.txt
+│   │   ├── IMG_7057.txt
+│   │   ├── IMG_7059.txt
+│   │   ├── IMG_7060.txt
+│   │   ├── IMG_7061.txt
+│   │   ├── IMG_7062.txt
+│   │   ├── IMG_7063.txt
+│   │   └── IMG_7064.txt
+│   ├── makesense_labels_white_2026_04_26_manual
+│   │   ├── IMG_7043.txt
+│   │   ├── IMG_7044.txt
+│   │   ├── IMG_7045.txt
+│   │   ├── IMG_7046.txt
+│   │   ├── IMG_7047.txt
+│   │   ├── IMG_7048.txt
+│   │   ├── IMG_7049.txt
+│   │   ├── IMG_7050.txt
+│   │   ├── IMG_7051.txt
+│   │   └── IMG_7052.txt
+│   └── relabel_val_bad_boxes
+├── videos
+│   ├── new_2026_04_26
+│   │   ├── red
+│   │   │   ├── IMG_7030.MOV
+│   │   │   ├── IMG_7032.MOV
+│   │   │   ├── IMG_7058.mov
+│   │   │   ├── IMG_7065.MOV
+│   │   │   ├── IMG_7066.MOV
+│   │   │   ├── IMG_7067.MOV
+│   │   │   ├── IMG_7068.MOV
+│   │   │   ├── IMG_7069.MOV
+│   │   │   ├── IMG_7070.MOV
+│   │   │   ├── IMG_7071.MOV
+│   │   │   ├── IMG_7074.MOV
+│   │   │   ├── IMG_7077.MOV
+│   │   │   ├── IMG_7079.MOV
+│   │   │   ├── IMG_7081.MOV
+│   │   │   ├── IMG_7082.MOV
+│   │   │   └── IMG_7083.MOV
+│   │   └── white
+│   │       ├── IMG_7033.MOV
+│   │       ├── IMG_7034.MOV
+│   │       ├── IMG_7035.MOV
+│   │       ├── IMG_7036.MOV
+│   │       ├── IMG_7037.MOV
+│   │       ├── IMG_7038.MOV
+│   │       ├── IMG_7039.MOV
+│   │       ├── IMG_7053.MOV
+│   │       ├── IMG_7054.MOV
+│   │       ├── IMG_7072.MOV
+│   │       ├── IMG_7073.MOV
+│   │       ├── IMG_7075.MOV
+│   │       ├── IMG_7076.MOV
+│   │       └── IMG_7078.MOV
+│   ├── red_micro_putt_trimmed.mp4
+│   ├── red_micro_putt.MOV
+│   └── white_micro_putt.mp4
+└── yolov8n.pt
+
+49 directories, 349 files
