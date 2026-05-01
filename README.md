@@ -257,22 +257,15 @@ Next data priority:
 - more varied lighting and angles
 - keep `IMG_7044` and `IMG_7045` as hard validation examples
 
-## Current Status: End-to-End Smoke-Test Pipeline Complete
+## Current Status: End-to-End Pipeline Working, Clean Dataset Pass In Progress
 
-The project now supports an end-to-end ML workflow at the smoke-test level. Starting from iPhone-captured golf-ball imagery and video frames, the project can seed a YOLO dataset, validate image/label pairs, split data into training and validation sets, train a YOLOv8n model, generate local model weights, and run inference against validation images.
+FindMyBall is an AIM240 computer vision capstone project for golf ball detection and tracking. The project now has an end-to-end ML prototype pipeline working:
 
-Pipeline summary:
+`data collection -> frame extraction -> manual YOLO labeling -> dataset validation -> train/validation split -> YOLOv8 training -> saved model weights -> test predictions`
 
-`data capture -> frame extraction -> YOLO labeling -> dataset validation -> train/val split -> YOLO training -> inference`
+The current model is not production-quality, and the main current focus is data quality. Visual inspection showed that some first-pass still-image bounding boxes were too loose. Rather than overclaiming performance, the project is moving to a cleaner second-pass YOLO dataset with compressed JPG images and tighter labels.
 
-Current interpretation:
-
-- This does not mean the model is production-ready.
-- The current dataset is intentionally small.
-- The first YOLO smoke model trained successfully and produced weights.
-- The first YOLO smoke model did not yet produce reliable detections on validation images.
-- The achievement at this stage is that the full training/inference pipeline is operational.
-- The next improvements are additional labeled data, better frame sampling, more diverse examples, and longer training.
+This reflects a core ML engineering lesson: dataset quality and label consistency are required before model metrics are meaningful. The project does not claim robust generalization or production readiness at this stage.
 
 ## Known Limitations
 
