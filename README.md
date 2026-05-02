@@ -278,6 +278,14 @@ Visual prediction checks on that small validation set also looked strong overall
 
 **Next step:** run inference on fresh, unseen photos and video frames that were not used for training or validation.
 
+## YOLO Video Centroid Tracking
+
+The project includes a simple frame-by-frame YOLO tracking script for controlled iPhone putt/chip MVP testing. It uses YOLO detections to find the `golf_ball` bounding box in each frame, then tracks the bounding-box centroid over time as a lightweight 2D trajectory.
+
+This is not production-grade tracking and does not use ByteTrack or a multi-object tracker. It is intended for short, controlled videos or extracted frame folders where the capstone goal is to show detection plus basic movement summary.
+
+Outputs include `detections.csv`, `trajectory_summary.json`, annotated frames, and `annotated_video.mp4` when the input is a video and video writing succeeds.
+
 ## Current Status: End-to-End Pipeline Working, Clean Dataset Pass In Progress
 
 FindMyBall is an AIM240 computer vision capstone project for golf ball detection and tracking. The project now has an end-to-end ML prototype pipeline working:
