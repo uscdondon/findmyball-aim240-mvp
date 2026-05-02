@@ -13,11 +13,16 @@ def find_image(images_dir: Path, stem: str):
             return p
     return None
 
-def draw_labels(split: str, max_images: int | None = None):
-    root = Path("data/yolo")
+def preview_output_dir(root: Path, split: str) -> Path:
+    root_text = root.as_posix().rstrip("/")
+    if root_text == "data/yolo_v2":
+        return Path("evidence") / "label_visual_checks_yolo_v2" / split
+    return Path("evidence") / "label_visual_checks" / split
+
+def draw_labels(root: Path, split: str, max_images: int | None = None):
     images_dir = root / "images" / split
     labels_dir = root / "labels" / split
-    out_dir = Path("evidence") / "label_visual_checks" / split
+    out_dir = preview_output_dir(root, split)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     label_files = sorted(labels_dir.glob("*.txt"))
@@ -81,11 +86,12 @@ def draw_labels(split: str, max_images: int | None = None):
 
 def main():
     parser = argparse.ArgumentParser(description="Visualize YOLO ground-truth labels.")
+    parser.add_argument("--root", default="data/yolo", help="YOLO dataset root directory.")
     parser.add_argument("--split", default="train", choices=["train", "val", "test"])
     parser.add_argument("--max-images", type=int, default=None)
     args = parser.parse_args()
 
-    draw_labels(args.split, args.max_images)
+    draw_labels(Path(args.root), args.split, args.max_images)
 
 if __name__ == "__main__":
     main()
