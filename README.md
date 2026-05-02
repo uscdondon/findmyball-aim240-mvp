@@ -274,6 +274,8 @@ On the **small** v2 validation set, Ultralytics validation reported:
 
 That validation split is still small, so treat these metrics as a strong controlled prototype checkpoint, **not** evidence of robust real-world behavior or production readiness.
 
+Visual prediction checks on that small validation set also looked strong overall: golf-ball hits were typically **~0.98–1.00** confidence. One useful case was different: an image triggered a **false positive**—a finger was labeled as `golf_ball` at **lower confidence**. That is diagnostic information, not a sign the run failed; it flags the next dataset focus: **hard-negative** examples—scenes or frames with grass-only background, fingers, shadows, glare, clubs, leaves, tees, or other clearly non-ball objects—so training helps the model learn what **not** to call `golf_ball`. The v2 detector is progressing, but remains a prototype and **not production-ready**.
+
 **Next step:** run inference on fresh, unseen photos and video frames that were not used for training or validation.
 
 ## Current Status: End-to-End Pipeline Working, Clean Dataset Pass In Progress
