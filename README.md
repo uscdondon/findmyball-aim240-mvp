@@ -257,6 +257,25 @@ Next data priority:
 - more varied lighting and angles
 - keep `IMG_7044` and `IMG_7045` as hard validation examples
 
+## YOLO v2 Clean Dataset Result
+
+After visual inspection showed that some first-pass still-image bounding boxes were too loose, the project moved from that dataset to a cleaner second-pass YOLO dataset.
+
+The second-pass dataset uses full-scene compressed JPG images with tight `golf_ball` bounding boxes. Grass and other surroundings stay visible for background context, while labels stay constrained to the visible golf ball only.
+
+YOLOv8n was trained for **30 epochs** on the clean v2 dataset. Training completed successfully and produced saved model weights.
+
+On the **small** v2 validation set, Ultralytics validation reported:
+
+- Precision: **0.972**
+- Recall: **1.000**
+- mAP50: **0.995**
+- mAP50-95: **0.995**
+
+That validation split is still small, so treat these metrics as a strong controlled prototype checkpoint, **not** evidence of robust real-world behavior or production readiness.
+
+**Next step:** run inference on fresh, unseen photos and video frames that were not used for training or validation.
+
 ## Current Status: End-to-End Pipeline Working, Clean Dataset Pass In Progress
 
 FindMyBall is an AIM240 computer vision capstone project for golf ball detection and tracking. The project now has an end-to-end ML prototype pipeline working:
