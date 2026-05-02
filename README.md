@@ -276,6 +276,8 @@ That validation split is still small, so treat these metrics as a strong control
 
 Visual prediction checks on that small validation set also looked strong overall: golf-ball hits were typically **~0.98–1.00** confidence. One useful case was different: an image triggered a **false positive**—a finger was labeled as `golf_ball` at **lower confidence**. That is diagnostic information, not a sign the run failed; it flags the next dataset focus: **hard-negative** examples—scenes or frames with grass-only background, fingers, shadows, glare, clubs, leaves, tees, or other clearly non-ball objects—so training helps the model learn what **not** to call `golf_ball`. The v2 detector is progressing, but remains a prototype and **not production-ready**.
 
+An additional unseen still-image test was run using a new compressed JPG containing both a white golf ball and a red/orange golf ball on grass. This image was not part of the YOLO v2 training or validation set. The model detected both balls successfully, with approximately **0.99** confidence on the white ball and **0.98** confidence on the red/orange ball, and the bounding boxes appeared tight around the visible balls. This is a useful detector generalization check before moving to sequential iPhone video tracking, but it is still only one unseen still-image test and **not** a production-readiness claim.
+
 **Next step:** run inference on fresh, unseen photos and video frames that were not used for training or validation.
 
 ## YOLO Video Centroid Tracking
