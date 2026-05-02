@@ -294,6 +294,21 @@ The YOLO centroid tracking script was tested on a fresh iPhone white-ball putt v
 
 This shows the MVP tracking pipeline working on a real iPhone putt video, while also showing that detection confidence stayed **below** typical still-image validation results from the compact v2 set and several frames had **no detection**. Stronger repeatable tracking will need **more labeled video frames** of small, moving white golf balls, including harder cases such as **motion blur**, **distance**, and **near the edge of the frame**.
 
+## Video Frame Retraining Experiment
+
+After the first white-ball putt video tracking test, the model detected the ball in **5 of 8** frames at **`conf=0.25`**. To target the missed frames, the **8 extracted video frames were labeled**, and a **YOLO v3** dataset was built by **adding** those frames to the clean **v2** dataset. The video-frame labels were visually inspected and **tight**, but the golf ball remained **very small** in the image.
+
+YOLOv8n was **retrained for 30 epochs** on the v3 dataset. On the same putt video sequence at the **normal** tracking threshold, the v3 model **did not improve** the frame-level detection outcome (it was not a clear win over v2 in this run). A **train-split** evaluation still looked partially strong but showed a **recall gap**:
+
+- Precision: **1.000**
+- Recall: **0.703**
+- mAP50: **0.800**
+- mAP50-95: **0.694**
+
+**Interpretation:** adding only **8** tiny, difficult video-frame examples was **not enough** to make small moving golf balls reliably detectable in this setup. The **current best MVP tracking result** on that first white-ball putt video remains the **v2** model.
+
+**Next improvement:** add **more** labeled small moving-ball frames, prefer **tighter camera framing** or **closer** capture when possible, and explore **ROI/crop-based training** or a **lower confidence threshold** for video tracking when false positives can be tolerated.
+
 ## Current Status: End-to-End Pipeline Working, Clean Dataset Pass In Progress
 
 FindMyBall is an AIM240 computer vision capstone project for golf ball detection and tracking. The project now has an end-to-end ML prototype pipeline working:
