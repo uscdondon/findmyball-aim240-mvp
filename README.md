@@ -288,6 +288,12 @@ This is not production-grade tracking and does not use ByteTrack or a multi-obje
 
 Outputs include `detections.csv`, `trajectory_summary.json`, annotated frames, and `annotated_video.mp4` when the input is a video and video writing succeeds.
 
+## Fresh iPhone Putt Video Tracking Test
+
+The YOLO centroid tracking script was tested on a fresh iPhone white-ball putt video. The video was converted into sequential frames, and the script ran YOLOv8 detection frame-by-frame. It produced `detections.csv`, `trajectory_summary.json`, and annotated frames with bounding boxes, centroids, and a simple path line. In this first video test, **8** frames were processed and the ball was detected in **5** frames, for a **62.5%** detection rate. Average confidence was **0.3133**, with confidence ranging from **0.2695** to **0.3442**. The centroid summary estimated the ball moving **mostly left**, with `delta_x = -906.25` and `delta_y = -30.73`.
+
+This shows the MVP tracking pipeline working on a real iPhone putt video, while also showing that detection confidence stayed **below** typical still-image validation results from the compact v2 set and several frames had **no detection**. Stronger repeatable tracking will need **more labeled video frames** of small, moving white golf balls, including harder cases such as **motion blur**, **distance**, and **near the edge of the frame**.
+
 ## Current Status: End-to-End Pipeline Working, Clean Dataset Pass In Progress
 
 FindMyBall is an AIM240 computer vision capstone project for golf ball detection and tracking. The project now has an end-to-end ML prototype pipeline working:

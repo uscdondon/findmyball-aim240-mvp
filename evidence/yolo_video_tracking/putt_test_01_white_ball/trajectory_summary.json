@@ -1,0 +1,26 @@
+{
+  "source": "input/video_tests/putt_test_01_white_ball_frames",
+  "model": "runs/detect/runs/findmyball/yolo_v2_clean_batch_01/weights/best.pt",
+  "confidence_threshold": 0.25,
+  "total_frames_processed": 8,
+  "frames_with_detection": 5,
+  "frames_without_detection": 3,
+  "detection_rate": 0.625,
+  "first_detection_frame": 2,
+  "last_detection_frame": 7,
+  "average_confidence": 0.3133,
+  "max_confidence": 0.3442,
+  "min_confidence": 0.2695,
+  "start_center": [
+    1152.92,
+    295.2
+  ],
+  "end_center": [
+    246.67,
+    264.47
+  ],
+  "delta_x": -906.25,
+  "delta_y": -30.73,
+  "rough_direction": "mostly left",
+  "notes": "Simple frame-by-frame YOLO centroid tracking for controlled iPhone putt/chip MVP testing. This is not production-grade tracking."
+}
