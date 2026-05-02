@@ -1,0 +1,5 @@
+path: data/yolo_v3
+train: images/train
+val: images/val
+names:
+  0: golf_ball
