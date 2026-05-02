@@ -317,6 +317,45 @@ YOLOv8n was **retrained for 30 epochs** on the v3 dataset. On the same putt vide
 
 **Next improvement:** add **more** labeled small moving-ball frames, prefer **tighter camera framing** or **closer** capture when possible, and explore **ROI/crop-based training** or a **lower confidence threshold** for video tracking when false positives can be tolerated.
 
+## Demo Commands
+
+Brief commands below assume Ultralytics CLI is installed (`pip install ultralytics`) and paths are substituted for your unseen white/red JPG and folder of sequentially extracted white-ball putt frames. Outputs are prototyping artifacts—not a finished product.
+
+Still-image prediction on the unseen white/red dual-ball photo (`best.pt` is the trained v2 weights):
+
+```bash
+yolo detect predict \
+  model=runs/detect/runs/findmyball/yolo_v2_clean_batch_01/weights/best.pt \
+  source=YOUR_UNSEEN_WHITE_RED_DUAL_BALL.jpg \
+  conf=0.25 \
+  project=runs/findmyball \
+  name=demo_white_red_still \
+  save=True \
+  exist_ok=True
+```
+
+Centroid tracking on the white-ball putt frame sequence (**v2** model, **`conf=0.25`**):
+
+```bash
+python scripts/detect_video_yolo.py \
+  --model runs/detect/runs/findmyball/yolo_v2_clean_batch_01/weights/best.pt \
+  --source PATH/TO/YOUR_PUTT_FRAMES_FOLDER \
+  --conf 0.25 \
+  --output-dir output/yolo_video_tracking/demo_putt_conf025
+```
+
+Same sequence with **`conf=0.15`** (recall-oriented; check annotated frames for false positives):
+
+```bash
+python scripts/detect_video_yolo.py \
+  --model runs/detect/runs/findmyball/yolo_v2_clean_batch_01/weights/best.pt \
+  --source PATH/TO/YOUR_PUTT_FRAMES_FOLDER \
+  --conf 0.15 \
+  --output-dir output/yolo_video_tracking/demo_putt_conf015
+```
+
+Tracking runs write annotated frames plus `detections.csv` and `trajectory_summary.json` under `--output-dir` (`annotated_video.mp4` when the `--source` is a video file and writing succeeds).
+
 ## Current Status: End-to-End Pipeline Working, Clean Dataset Pass In Progress
 
 FindMyBall is an AIM240 computer vision capstone project for golf ball detection and tracking. The project now has an end-to-end ML prototype pipeline working:
