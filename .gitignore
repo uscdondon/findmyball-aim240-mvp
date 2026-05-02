@@ -43,3 +43,6 @@ yolov8n.pt
 raw_media/
 tmp/
 **/.DS_Store
+
+# YOLO cache files
+*.cache
