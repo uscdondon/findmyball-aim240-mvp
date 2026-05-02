@@ -294,6 +294,14 @@ The YOLO centroid tracking script was tested on a fresh iPhone white-ball putt v
 
 This shows the MVP tracking pipeline working on a real iPhone putt video, while also showing that detection confidence stayed **below** typical still-image validation results from the compact v2 set and several frames had **no detection**. Stronger repeatable tracking will need **more labeled video frames** of small, moving white golf balls, including harder cases such as **motion blur**, **distance**, and **near the edge of the frame**.
 
+## Confidence Threshold Sweep for Video Tracking
+
+Still-image tests produced high-confidence detections around **0.98 to 1.00**. The iPhone putt-video frames were more difficult because the white ball was **tiny**, **moving**, **compressed**, and sometimes near the **frame edge**.
+
+A confidence-threshold sweep was run on that white-ball putt frame sequence using the **YOLO v2** model. At **`conf=0.25`**, visual detections were **conservative** and looked **clean enough** for a respectable capstone demo. At **`conf=0.15`**, **recall** improved: the model detected the ball in **7 of 8** frames in the CSV output. That makes **`0.15`** a useful option for centroid-tracking continuity, but it is a **recall-oriented** choice and needs **visual inspection** for potential false positives.
+
+This illustrates the **precision/recall tradeoff**: higher thresholds are stricter, while lower thresholds can recover more tiny moving-ball frames. This is prototyping and experimentation for the MVP—**not** a production readiness claim.
+
 ## Video Frame Retraining Experiment
 
 After the first white-ball putt video tracking test, the model detected the ball in **5 of 8** frames at **`conf=0.25`**. To target the missed frames, the **8 extracted video frames were labeled**, and a **YOLO v3** dataset was built by **adding** those frames to the clean **v2** dataset. The video-frame labels were visually inspected and **tight**, but the golf ball remained **very small** in the image.
