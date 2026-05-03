@@ -1,5 +1,10 @@
 # FindMyBall AIM240 - Next Steps
 
+## Public Deployment Links
+
+- **FindMyBall.io** — public landing page for the golf ball computer vision MVP: https://findmyball.io/
+- **Don M. Inouye** — professional AI / ML portfolio site: https://donminouye.com/
+
 ## Current Status
 
 The project has an end-to-end smoke-test ML pipeline:

@@ -1,5 +1,10 @@
 ## AIM240 FindMyBall MVP
 
+## Live Project Links
+
+- **FindMyBall.io** — public landing page for the golf ball computer vision MVP: https://findmyball.io/
+- **Don M. Inouye** — professional AI / ML portfolio site: https://donminouye.com/
+
 ## Project Overview
 
 FindMyBall AIM240 MVP is a computer vision capstone prototype for detecting golf ball candidates in still images and short putt/chip-shot videos. The current system is a working baseline intended for class demonstration and iterative improvement, not a production detector.
