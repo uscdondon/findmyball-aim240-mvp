@@ -5,6 +5,14 @@
 - **FindMyBall.io** — public landing page for the golf ball computer vision MVP: https://findmyball.io/
 - **Don M. Inouye** — professional AI / ML portfolio site: https://donminouye.com/
 
+## Why This Is Non-Trivial
+
+Computer vision can look deceptively simple because human vision feels effortless. In reality, seeing is biologically and computationally difficult. A human does not see like a camera. The eye captures light, the fovea provides only a small area of high-acuity vision, and the brain uses attention, memory, motion cues, prediction, and context to turn incomplete visual signals into meaning.
+
+FindMyBall is working inside that same difficulty at a smaller scale. A golf ball in real iPhone video can be tiny, fast, white against glare or grass, motion-blurred, compressed, partially occluded, or visible for only a few frames. Even humans can lose the ball in flight. The current MVP therefore treats golf-ball tracking as a non-trivial perception problem, not just a simple object-detection exercise.
+
+The first goal is to detect and track visible short-game ball motion under controlled iPhone conditions. The longer-term product idea is broader: when full visual tracking fails, FindMyBall could eventually combine early visual detection, launch direction, trajectory estimation, phone/camera context, and coarse GPS/map information to predict a likely search zone. GPS is intentionally out of scope for the current MVP because phone-level location accuracy is far too coarse for precise chip-shot trajectory tracking.
+
 ## Project Overview
 
 FindMyBall AIM240 MVP is a computer vision capstone prototype for detecting golf ball candidates in still images and short putt/chip-shot videos. The current system is a working baseline intended for class demonstration and iterative improvement, not a production detector.
