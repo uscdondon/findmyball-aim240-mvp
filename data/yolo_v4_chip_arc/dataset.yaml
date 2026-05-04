@@ -1,0 +1,6 @@
+path: /Users/doninouye/Desktop/aim240-capstone/findmyball-aim240-mvp/data/yolo_v4_chip_arc
+train: images/train
+val: images/val
+
+names:
+  0: golf_ball
